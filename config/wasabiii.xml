@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <numOfChars>8</numOfChars>
+    <includeLetters>true</includeLetters>
+    <includeNumbers>true</includeNumbers>
+    <includeSymbols>true</includeSymbols>
+    <caseSensitivity>mixedCase</caseSensitivity>
+    <symbols>@#$!_!</symbols>
+</config>

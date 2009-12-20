@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Wasabiii tests</title>
+    <link rel="stylesheet" href="qunit/qunit.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="../lib/air/AIRAliases.js"></script>
+    <script type="text/javascript" src="../lib/air/AIRIntrospector.js"></script>
+    <script type="text/javascript" src="../lib/jquery/jquery-1.3.2.js"></script>
+    <script type="text/javascript" src="../lib/qunit/qunit.js"></script>
+    <script type="text/javascript" src="../lib/json/json2.js"></script>
+    <script type="text/javascript" src="../lib/wasabiii/wasabiii.js"></script>
+    <script type="text/javascript" src="../lib/wasabiii/wasabiii.config.js"></script>
+    <script type="text/javascript" src="../lib/wasabiii/wasabiii.password.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            /**
+             * Execute test x amount of times
+             * 
+             * Since this IS a random password generator it be nice to test more than one sample...
+             */
+            var testRepeat = function(testLabel, testFunctionCallback, repeatCount)
+            {
+                for (var i = 0; i < repeatCount; i++) {
+                    test(testLabel, testFunctionCallback);
+                }
+            }
+            
+            /**
+             * wasabiii.password tests
+             */
+            testRepeat('generate password with no config is valid', function() {
+                var passwordManager = new wasabiii.password();
+                //air.Introspector.Console.log(passwordManager);
+                var password = passwordManager.generate();
+                ok(password.length > 0, 'password is not empty');
+            }, 10);
+            
+            testRepeat('generate password with letters is valid', function() {
+                var config = {
+                    numOfChars: 8,
+                    includeLetters: true,
+                    includeNumbers: false,
+                    includeSymbols: false
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                var regex = /^[a-zA-Z]+$/;
+                ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            testRepeat('generate password with lower case letters is valid', function() {
+                var config = {
+                    numOfChars: 8,
+                    includeLetters: true,
+                    includeNumbers: false,
+                    caseSensitivity: 'lowerCase',
+                    includeSymbols: false
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                var regex = /^[a-z]+$/;
+                ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            testRepeat('generate password with upper case letters is valid', function() {
+                var config = {
+                    numOfChars: 8,
+                    includeLetters: true,
+                    includeNumbers: false,
+                    caseSensitivity: 'upperCase',
+                    includeSymbols: false
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                var regex = /^[A-Z]+$/;
+                ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            testRepeat('generate password with letters with mixed case & numbers with only 6 chars is valid', function() {
+                var config = {
+                    numOfChars: 6,
+                    includeLetters: true,
+                    includeNumbers: true,
+                    caseSensitivity: 'mixedCase',
+                    includeSymbols: false
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                var regex = /^[a-zA-Z0-9]+$/;
+                 ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            testRepeat('generate password with symbols is valid', function() {
+                var config = {
+                    numOfChars: 8,
+                    includeLetters: false,
+                    includeNumbers: false,
+                    includeSymbols: true
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                //anything but letters and numbers
+                var regex = /^[^a-zA-Z0-9]+$/;
+                ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            testRepeat('generate password with custom symbols is valid', function() {
+                var config = {
+                    numOfChars: 8,
+                    includeLetters: false,
+                    includeNumbers: false,
+                    includeSymbols: true,
+                    symbols: '@#$!_|'
+                }
+                
+                var passwordManager = new wasabiii.password(config);
+                var password = passwordManager.generate();
+                //check for only these specific symbols
+                var regex = /^(\@|\#|\$|\!|\_|\|)+$/;
+                ok(password.length == config.numOfChars, 'password matches number of chars in config');
+                ok(regex.test(password), 'password includes letters and numbers');
+            }, 20);
+            
+            /**
+             * wasabiii.config tests
+             */
+            test('first time configuration init is valid', function() {
+                var defaultConfigFilePath = 'config/wasabiii.js';
+                var userConfigFilePath = 'Preferences/wasabiii.test.js';
+                
+                var assertUserConfigFile = air.File.applicationStorageDirectory;
+                assertUserConfigFile = assertUserConfigFile.resolvePath(userConfigFilePath);
+                ok(!assertUserConfigFile.exists, 'user config file should not exist yet');
+           
+                var config = new wasabiii.config(defaultConfigFilePath, userConfigFilePath);
+                var userConfigFile = config.read();
+                
+                var assertUserConfigFile = air.File.applicationStorageDirectory;
+                assertUserConfigFile = assertUserConfigFile.resolvePath(userConfigFilePath);
+                ok(assertUserConfigFile.exists, 'user config file now should exist');
+                
+                //load user config file
+                var stream = new air.FileStream();
+                stream.open(assertUserConfigFile, air.FileMode.READ);                
+                //check read config file is the same
+                same(userConfigFile, JSON.parse(stream.readUTFBytes(stream.bytesAvailable)));
+                stream.close();
+                
+                //clean up
+                assertUserConfigFile.deleteFile();
+            });
+            
+            test('config read is valid', function() {
+                var defaultConfigFilePath = 'config/wasabiii.js';
+                var userConfigFilePath = 'Preferences/wasabiii.test.js';
+           
+                var config = new wasabiii.config(defaultConfigFilePath, userConfigFilePath);
+                var userConfigFile = config.read();
+                
+                ok(userConfigFile, 'user config file has been read');
+                
+                //clean up
+                air.File.applicationStorageDirectory.resolvePath(userConfigFilePath).deleteFile();
+            });
+            
+            test('config write is valid', function() {
+                var defaultConfigFilePath = 'config/wasabiii.js';
+                var userConfigFilePath = 'Preferences/wasabiii.test.js';
+           
+                var config = new wasabiii.config(defaultConfigFilePath, userConfigFilePath);
+                var assertConfig = {
+                    test: 'test'
+                }
+                
+                config.write(assertConfig);
+                
+                same(assertConfig, config.read(), 'new config has been written');
+                
+                //clean up
+                air.File.applicationStorageDirectory.resolvePath(userConfigFilePath).deleteFile();
+            });
+            
+        });
+    </script>
+</head>
+<body>
+<h1 id="qunit-header">Wasabiii tests</h1>
+<h2 id="qunit-banner"></h2>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+</body>
+</html>

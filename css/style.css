@@ -1,0 +1,132 @@
+* {
+    margin: 0px;
+}
+
+button {
+    cursor: pointer;
+}
+
+body {
+    background-color: #FFFFFF;
+}
+
+#content {
+    
+}
+
+#footer {
+    margin-top: 75px;
+    padding-right: 0px;
+    text-align: right;
+}
+
+#window-container {
+    width: 390px;
+    height: 298px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+}
+
+#window-vertical-scroller-container {
+    position: relative;
+    overflow: hidden;
+    width: inherit;
+    height: inherit;
+}
+
+#window-vertical-scroller {
+    position: absolute;
+    width: 390px;
+    height: 590px;
+}
+
+.window {
+    width: 380px;
+    height: 288px;
+    padding: 5px;
+}
+
+#logo {
+    background-image: url(images/wasabiii-logo.png);
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+    cursor: pointer;
+}
+
+#home-container {
+    background-image: url(images/bg.png);
+    background-repeat: repeat-x;
+}
+
+#options-container {
+    /*display: none;*/
+   background-color: #c1ce8e;
+}
+
+#content {
+    padding-left: 0px;
+    padding-right: 0px;
+    text-align: center;
+}
+
+#password {
+    margin-top: 40px;
+    font-family: Helvetica, sans-serif;
+    color: #484848;
+    font-weight: bold;
+    font-size: 30px;
+    /*border: none;*/
+    width: 370px;
+    text-align: center;
+}
+
+#password:focus {
+    background-color: #eeeeee;
+}
+
+#generate-button {
+    margin-top: 30px;
+    display: block;
+    margin: 20px auto 0 auto;
+    width: 250px; 
+    text-align:center;
+    line-height: 46px;           
+
+    /* Font styling */
+    font-family: Helvetica;
+    font-weight: bold;
+    font-size: 20px;
+    text-decoration: none;
+    color: #000;
+    text-shadow: #fff 0px 1px 1px; /* slight white drop shadow */
+    background: none;
+    border-width: 0 14px 0 14px;
+    -webkit-border-image: url(images/button-large.png) 0 14 0 14;
+}
+
+#options-button {
+    font-size: 12px;
+}
+
+#options-list {
+    list-style: none;
+}
+
+#options-list li {
+    margin-top: 10px;
+    padding: 2px;
+}
+
+#numOfChars {
+    width: 22px;
+    font-family: Helvetica, sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+#symbols {
+    width: 80px;
+    font-family: Helvetica, sans-serif;
+    font-size: 16px;
+}
